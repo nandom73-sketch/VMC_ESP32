@@ -20,7 +20,6 @@
 
 namespace
 {
-constexpr uint8_t BME280_FALLBACK_ADDRESS = 0x77;
 constexpr float PA_TO_HPA = 100.0f;
 
 Adafruit_SHT31 sht31;
@@ -35,25 +34,15 @@ void printResult(const bool ok)
     Serial.println(ok ? F("OK") : F("FAIL"));
 }
 
-bool beginBME280AtAddress(const uint8_t address)
+bool beginBME280()
 {
     Serial.print(F("Trying BME280 @0x"));
-    Serial.println(address, HEX);
+    Serial.println(0x76, HEX);
 
-    const bool ok = bme.begin(address, &Wire);
+    const bool ok = bme.begin(0x76, &Wire);
     printResult(ok);
 
     return ok;
-}
-
-bool beginBME280()
-{
-    if (beginBME280AtAddress(BME280_ADDRESS))
-    {
-        return true;
-    }
-
-    return beginBME280AtAddress(BME280_FALLBACK_ADDRESS);
 }
 
 bool beginSHT31()
