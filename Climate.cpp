@@ -18,54 +18,90 @@
 #include <Adafruit_SHT31.h>
 #include <Adafruit_BME280.h>
 
-static Adafruit_SHT31 sht31;
-static Adafruit_BME280 bme;
+namespace
+{
+constexpr uint8_t BME280_FALLBACK_ADDRESS = 0x77;
+constexpr float PA_TO_HPA = 100.0f;
 
-static bool sht31OK = false;
-static bool bmeOK = false;
+Adafruit_SHT31 sht31;
+Adafruit_BME280 bme;
+
+bool sht31OK = false;
+bool bmeOK = false;
+
+void printResult(const bool ok)
+{
+    Serial.print(F("Result: "));
+    Serial.println(ok ? F("OK") : F("FAIL"));
+}
+
+bool beginBME280AtAddress(const uint8_t address)
+{
+    Serial.print(F("Trying BME280 @0x"));
+    Serial.println(address, HEX);
+
+    const bool ok = bme.begin(address, &Wire);
+    printResult(ok);
+
+    return ok;
+}
+
+bool beginBME280()
+{
+    if (beginBME280AtAddress(BME280_ADDRESS))
+    {
+        return true;
+    }
+
+    return beginBME280AtAddress(BME280_FALLBACK_ADDRESS);
+}
+
+bool beginSHT31()
+{
+    Serial.println(F("Trying SHT31"));
+
+    const bool ok = sht31.begin(SHT31_ADDRESS);
+    printResult(ok);
+
+    return ok;
+}
+
+void readSHT31(SensorData &data)
+{
+    data.intTemp = sht31.readTemperature();
+    data.intHum = sht31.readHumidity();
+}
+
+void readBME280(SensorData &data)
+{
+    data.extTemp = bme.readTemperature();
+    data.extHum = bme.readHumidity();
+    data.pressure = bme.readPressure() / PA_TO_HPA;
+}
+} // namespace
 
 bool Climate_begin()
 {
     Serial.println();
-    Serial.println("===== Climate Begin =====");
+    Serial.println(F("===== Climate Begin ====="));
 
     Wire.begin(PIN_I2C_SDA, PIN_I2C_SCL);
 
-    Serial.println("Wire.begin() OK");
+    Serial.println(F("Wire.begin() OK"));
 
     // ---------------------------
     // Test BME280
     // ---------------------------
 
-    Serial.println("Trying BME280 @0x76");
-
-    bmeOK = bme.begin(0x76, &Wire);
-
-    Serial.print("Result: ");
-    Serial.println(bmeOK ? "OK" : "FAIL");
-
-    if (!bmeOK)
-    {
-        Serial.println("Trying BME280 @0x77");
-
-        bmeOK = bme.begin(0x77, &Wire);
-
-        Serial.print("Result: ");
-        Serial.println(bmeOK ? "OK" : "FAIL");
-    }
+    bmeOK = beginBME280();
 
     // ---------------------------
     // Test SHT31
     // ---------------------------
 
-    Serial.println("Trying SHT31");
+    sht31OK = beginSHT31();
 
-    sht31OK = sht31.begin(0x44);
-
-    Serial.print("Result: ");
-    Serial.println(sht31OK ? "OK" : "FAIL");
-
-    Serial.println("=========================");
+    Serial.println(F("========================="));
 
     return (sht31OK && bmeOK);
 }
@@ -74,15 +110,12 @@ bool Climate_read(SensorData &data)
 {
     if (sht31OK)
     {
-        data.intTemp = sht31.readTemperature();
-        data.intHum  = sht31.readHumidity();
+        readSHT31(data);
     }
 
     if (bmeOK)
     {
-        data.extTemp  = bme.readTemperature();
-        data.extHum   = bme.readHumidity();
-        data.pressure = bme.readPressure() / 100.0f;
+        readBME280(data);
     }
 
     return true;
