@@ -10,6 +10,7 @@
 #include "Climate.h"
 #include "Display.h"
 #include "Fans.h"
+#include "WebServer.h"
 
 //=============================================================================
 // Variabili globali
@@ -73,6 +74,20 @@ void setup()
         Serial.println("Display : ERROR");
     }
 
+
+    //---------------------------------------------------------
+    // WebServer
+    //---------------------------------------------------------
+
+    if (WebServer_begin())
+    {
+        Serial.println("WebServer: OK");
+    }
+    else
+    {
+        Serial.println("WebServer: ERROR");
+    }
+
     Serial.println();
 
     fans.inPercent = 0;
@@ -133,6 +148,8 @@ void loop()
     Serial.println(" %");
 
     Serial.println("-----------------------------");
+
+    WebServer_update();
 
     delay(2000);
 }
