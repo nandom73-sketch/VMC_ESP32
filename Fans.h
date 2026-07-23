@@ -20,6 +20,7 @@ void Fans_setOut(uint8_t percent);
 
 uint8_t Fans_getIn();
 uint8_t Fans_getOut();
+const FanData& Fans_getData();
 
 void Fans_stopAll();
 

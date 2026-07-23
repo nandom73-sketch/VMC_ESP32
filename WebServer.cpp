@@ -10,8 +10,6 @@
 #include_next <WebServer.h>
 #include <stdio.h>
 
-extern SensorData climate;
-extern FanData fans;
 
 namespace
 {
@@ -23,8 +21,8 @@ char htmlBuffer[HTML_BUFFER_SIZE];
 
 void handleRoot()
 {
-    fans.inPercent = Fans_getIn();
-    fans.outPercent = Fans_getOut();
+    const SensorData& climate = Climate_getData();
+    const FanData& fans = Fans_getData();
 
     snprintf(htmlBuffer,
              sizeof(htmlBuffer),
