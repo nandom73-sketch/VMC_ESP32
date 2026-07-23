@@ -2,7 +2,7 @@
  * VMC Firmware
  *
  * STATUS  : DEVELOPMENT
- * VERSION : 0.1.6
+ * VERSION : 0.1.7
  *
  ******************************************************************************/
 
@@ -11,6 +11,7 @@
 #include "Display.h"
 #include "Fans.h"
 #include "HttpServer.h"
+#include "Wifi.h"
 
 //=============================================================================
 // Variabili globali
@@ -18,6 +19,7 @@
 
 SensorData climate;
 FanData fans;
+bool webServerStarted = false;
 
 //=============================================================================
 // Setup
@@ -76,16 +78,27 @@ void setup()
 
 
     //---------------------------------------------------------
-    // WebServer
+    // WiFi + WebServer
     //---------------------------------------------------------
 
-    if (WebServer_begin())
+    if (Wifi_begin())
     {
-        Serial.println("WebServer: OK");
+        Serial.println("WiFi    : OK");
+
+        if (WebServer_begin())
+        {
+            webServerStarted = true;
+            Serial.println("WebServer: OK");
+        }
+        else
+        {
+            Serial.println("WebServer: ERROR");
+        }
     }
     else
     {
-        Serial.println("WebServer: ERROR");
+        Serial.println("WiFi    : ERROR");
+        Serial.println("WebServer: SKIPPED");
     }
 
     Serial.println();
@@ -149,7 +162,10 @@ void loop()
 
     Serial.println("-----------------------------");
 
-    WebServer_update();
+    if (webServerStarted)
+    {
+        WebServer_update();
+    }
 
     delay(2000);
 }

@@ -1,6 +1,12 @@
 \# VMC Firmware
 
 
+\## v0.1.7 - 2026-07-23
+
+\### Added
+\- Wi-Fi STA module with timeout, Serial IP logging, mDNS hostname vmc.local, and conditional HTTP server startup
+
+
 
 \## v0.1.3 - 2026-06-28
 
