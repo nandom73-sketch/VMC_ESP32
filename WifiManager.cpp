@@ -6,7 +6,7 @@
  *
  ******************************************************************************/
 
-#include "Wifi.h"
+#include "WifiManager.h"
 
 #include <Arduino.h>
 #include <ESPmDNS.h>
@@ -24,7 +24,7 @@ constexpr unsigned long WIFI_CONNECT_TIMEOUT_MS = 10000;
 constexpr unsigned long WIFI_CONNECT_POLL_MS = 250;
 constexpr char MDNS_HOSTNAME[] = "vmc";
 
-struct WifiCredentials
+struct WifiManagerCredentials
 {
     const char* ssid;
     const char* password;
@@ -32,7 +32,7 @@ struct WifiCredentials
 
 bool wifiConnected = false;
 
-WifiCredentials loadCredentials()
+WifiManagerCredentials loadCredentials()
 {
     // Punto unico di sostituzione per una futura lettura da Preferences/NVS.
     return { WIFI_SSID, WIFI_PASSWORD };
@@ -55,13 +55,13 @@ bool waitForConnection()
 }
 } // namespace
 
-bool Wifi_begin()
+bool WifiManager_begin()
 {
     wifiConnected = false;
 
     Serial.println();
     Serial.println(F("===== WiFi Begin ====="));
-    const WifiCredentials credentials = loadCredentials();
+    const WifiManagerCredentials credentials = loadCredentials();
 
     Serial.print(F("Connecting to SSID: "));
     Serial.println(credentials.ssid);
@@ -98,12 +98,12 @@ bool Wifi_begin()
     return true;
 }
 
-bool Wifi_isConnected()
+bool WifiManager_isConnected()
 {
     return wifiConnected && (WiFi.status() == WL_CONNECTED);
 }
 
-IPAddress Wifi_getLocalIp()
+IPAddress WifiManager_getLocalIp()
 {
     return WiFi.localIP();
 }

@@ -6,13 +6,13 @@
  *
  ******************************************************************************/
 
-#ifndef VMC_WIFI_H
-#define VMC_WIFI_H
+#ifndef VMC_WIFI_MANAGER_H
+#define VMC_WIFI_MANAGER_H
 
 #include <IPAddress.h>
 
-bool Wifi_begin();
-bool Wifi_isConnected();
-IPAddress Wifi_getLocalIp();
+bool WifiManager_begin();
+bool WifiManager_isConnected();
+IPAddress WifiManager_getLocalIp();
 
 #endif
