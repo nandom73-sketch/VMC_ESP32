@@ -20,13 +20,22 @@
 
 
 
+\## v0.1.7
+
+\- WiFi STA
+
+\- mDNS vmc.local
+
+
+
 \## Future
 
 \- Ventole
 
-\- WiFi
+\- Settings persistenti WiFi
 
-\- Settings
+\- OTA
+
+\- Authentication
 
 \- Google Home
-

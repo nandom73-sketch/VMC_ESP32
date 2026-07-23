@@ -2,7 +2,7 @@
  * VMC Firmware
  *
  * STATUS  : STABLE
- * VERSION : 0.1.5
+ * VERSION : 0.1.7
  *
  * PURPOSE
  * Configurazione hardware e costanti globali.
@@ -18,7 +18,7 @@
 // Firmware
 //=============================================================================
 
-constexpr char FW_VERSION[] = "0.1.5";
+constexpr char FW_VERSION[] = "0.1.7";
 
 //=============================================================================
 // I2C
