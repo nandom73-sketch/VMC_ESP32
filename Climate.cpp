@@ -27,6 +27,7 @@ Adafruit_BME280 bme;
 
 bool sht31OK = false;
 bool bmeOK = false;
+SensorData latestData = {};
 
 void printResult(const bool ok)
 {
@@ -107,7 +108,14 @@ bool Climate_read(SensorData &data)
         readBME280(data);
     }
 
+    latestData = data;
+
     return true;
+}
+
+const SensorData& Climate_getData()
+{
+    return latestData;
 }
 
 bool Climate_isSHT31_OK()

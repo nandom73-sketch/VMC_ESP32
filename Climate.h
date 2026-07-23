@@ -18,6 +18,7 @@ struct SensorData
 
 bool Climate_begin();
 bool Climate_read(SensorData &data);
+const SensorData& Climate_getData();
 
 bool Climate_isSHT31_OK();
 bool Climate_isBME280_OK();
