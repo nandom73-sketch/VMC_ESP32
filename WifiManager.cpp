@@ -17,8 +17,8 @@ namespace
 // Credenziali provvisorie: in una revisione futura saranno caricate da
 // configurazione persistente (Preferences/NVS) senza modificare l'interfaccia
 // pubblica del modulo.
-constexpr char WIFI_SSID[] = "YOUR_WIFI_SSID";
-constexpr char WIFI_PASSWORD[] = "YOUR_WIFI_PASSWORD";
+constexpr char WIFI_SSID[] = "EOLO - Mambre.Home";
+constexpr char WIFI_PASSWORD[] = "000piazzacalda000";
 
 constexpr unsigned long WIFI_CONNECT_TIMEOUT_MS = 10000;
 constexpr unsigned long WIFI_CONNECT_POLL_MS = 250;
