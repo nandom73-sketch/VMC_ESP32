@@ -11,7 +11,7 @@
 #include "Display.h"
 #include "Fans.h"
 #include "HttpServer.h"
-#include "Wifi.h"
+#include "WifiManager.h"
 
 //=============================================================================
 // Variabili globali
@@ -81,7 +81,7 @@ void setup()
     // WiFi + WebServer
     //---------------------------------------------------------
 
-    if (Wifi_begin())
+    if (WifiManager_begin())
     {
         Serial.println("WiFi    : OK");
 
