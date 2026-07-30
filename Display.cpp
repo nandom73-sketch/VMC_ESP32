@@ -2,7 +2,7 @@
  * Display Module
  *
  * STATUS  : DEVELOPMENT
- * VERSION : 0.1.4
+ * VERSION : 0.1.5 - Ruotato display
  *
  ******************************************************************************/
 
@@ -139,7 +139,7 @@ bool Display_begin()
 
     display.begin();
 
-    display.setRotation(1);
+    display.setRotation(3);
 
     display.fillScreen(ILI9341_BLACK);
 
