@@ -13,6 +13,7 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_ILI9341.h>
 #include <math.h>
+#include "VMC_UI_v1.h"
 
 //=============================================================================
 
@@ -86,34 +87,12 @@ static void Display_drawHomePercent(int16_t y,
 
 static void Display_drawHomeLayout()
 {
-    display.fillScreen(ILI9341_BLACK);
-
-    display.setTextColor(ILI9341_WHITE);
-    display.setTextSize(2);
-
-    display.setCursor(10,10);
-    display.println("VMC HOME");
-
-    display.setCursor(HOME_LABEL_X,45);
-    display.print("INT");
-
-    display.setCursor(HOME_LABEL_X,65);
-    display.print("HUM");
-
-    display.setCursor(HOME_LABEL_X,105);
-    display.print("EXT");
-
-    display.setCursor(HOME_LABEL_X,125);
-    display.print("HUM");
-
-    display.setCursor(HOME_LABEL_X,165);
-    display.print("PRES");
-
-    display.setCursor(HOME_LABEL_X,200);
-    display.print("IN");
-
-    display.setCursor(HOME_LABEL_X,220);
-    display.print("OUT");
+    display.drawRGBBitmap(
+        0,
+        0,
+        vmcBackground,
+        VMC_BG_WIDTH,
+        VMC_BG_HEIGHT);
 
     homeCache.layoutDrawn = true;
 }
