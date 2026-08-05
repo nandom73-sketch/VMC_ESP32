@@ -172,30 +172,59 @@ void Display_showHome(const SensorData& climate,
     display.setTextSize(2);
 
     if (Display_floatChanged(homeCache.intTemp, climate.intTemp))
-    {
-        Display_drawHomeFloat(45, " C", climate.intTemp);
-        homeCache.intTemp = climate.intTemp;
-    }
+{
+    display.fillRect(15, 99, 106, 44, ILI9341_DARKGREY);
+
+    display.setTextColor(ILI9341_WHITE);
+    display.setTextSize(4);
+    display.setCursor(20,108);
+
+    display.print(climate.intTemp,1);
+    //display.print("°");
+
+    homeCache.intTemp = climate.intTemp;
+}
 
     if (Display_floatChanged(homeCache.intHum, climate.intHum))
     {
-        Display_drawHomeFloat(65, " %", climate.intHum);
+        display.fillRect(57,170,55,28,ILI9341_DARKGREY);
+
+display.setTextColor(ILI9341_WHITE);
+display.setTextSize(3);
+display.setCursor(73,174);
+
+display.print((int)climate.intHum);
+//display.print("%");
         homeCache.intHum = climate.intHum;
     }
 
     if (Display_floatChanged(homeCache.extTemp, climate.extTemp))
-    {
-        Display_drawHomeFloat(105, " C", climate.extTemp);
-        homeCache.extTemp = climate.extTemp;
-    }
+{
+    display.fillRect(176, 99, 107, 44, ILI9341_DARKGREY);
+
+    display.setTextColor(ILI9341_WHITE);
+    display.setTextSize(4);
+    display.setCursor(181, 108);
+
+    display.print(climate.extTemp, 1);
+
+    homeCache.extTemp = climate.extTemp;
+}
 
     if (Display_floatChanged(homeCache.extHum, climate.extHum))
     {
-        Display_drawHomeFloat(125, " %", climate.extHum);
+        display.fillRect(218,170,55,28,ILI9341_DARKGREY);
+
+display.setTextColor(ILI9341_WHITE);
+display.setTextSize(3);
+display.setCursor(233,174);
+
+display.print((int)climate.extHum);
+//display.print("%");
         homeCache.extHum = climate.extHum;
     }
-
-    if (Display_floatChanged(homeCache.pressure, climate.pressure))
+/*
+   if (Display_floatChanged(homeCache.pressure, climate.pressure))
     {
         Display_drawHomeFloat(165, " hPa", climate.pressure);
         homeCache.pressure = climate.pressure;
@@ -212,4 +241,5 @@ void Display_showHome(const SensorData& climate,
         Display_drawHomePercent(220, fans.outPercent);
         homeCache.outPercent = fans.outPercent;
     }
+*/
 }
