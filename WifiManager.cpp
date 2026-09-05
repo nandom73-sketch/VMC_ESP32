@@ -63,8 +63,7 @@ bool WifiManager_begin()
     Serial.println(F("===== WiFi Begin ====="));
     const WifiManagerCredentials credentials = loadCredentials();
 
-    Serial.print(F("Connecting to SSID: "));
-    Serial.println(credentials.ssid);
+    Serial.println(F("Connecting to configured WiFi network"));
 
     WiFi.mode(WIFI_STA);
     WiFi.begin(credentials.ssid, credentials.password);

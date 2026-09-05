@@ -45,6 +45,10 @@ constexpr uint8_t PIN_TFT_SCK  = 18;
 constexpr uint8_t PIN_FAN_IN  = 25;
 constexpr uint8_t PIN_FAN_OUT = 26;
 
+// Mappatura provvisoria dei sette livelli di ventilazione in percentuale PWM.
+// Modificare solo questa tabella quando saranno definiti i valori finali.
+constexpr uint8_t FAN_SPEED_PERCENT[7] = { 14, 28, 42, 57, 71, 85, 100 };
+
 //=============================================================================
 // Sensori
 //=============================================================================
