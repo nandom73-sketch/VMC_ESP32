@@ -49,6 +49,9 @@ constexpr uint8_t PIN_FAN_OUT = 26;
 // Modificare solo questa tabella quando saranno definiti i valori finali.
 constexpr uint8_t FAN_SPEED_PERCENT[7] = { 14, 28, 42, 57, 71, 85, 100 };
 
+// Durata, in minuti, aggiunta al countdown a ogni attivazione del Boost.
+constexpr uint16_t BOOST_TIME_MINUTES = 10;
+
 //=============================================================================
 // Sensori
 //=============================================================================
