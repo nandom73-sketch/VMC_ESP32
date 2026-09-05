@@ -56,6 +56,7 @@ void Fans_setIn(uint8_t percent)
         percent = 100;
 
     fans.inPercent = percent;
+    Fans_updateSpeed();
 }
 
 //==============================================================================
@@ -68,6 +69,7 @@ void Fans_setOut(uint8_t percent)
         percent = 100;
 
     fans.outPercent = percent;
+    Fans_updateSpeed();
 }
 
 //==============================================================================
