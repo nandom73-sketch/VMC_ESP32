@@ -16,16 +16,6 @@ static FanData fans =
     0   // speed
 };
 
-//==============================================================================
-// Funzioni private
-//==============================================================================
-
-static void Fans_applyPercent(uint8_t pin, uint8_t percent)
-{
-    const uint8_t pwmValue = (static_cast<uint16_t>(percent) * 255U) / 100U;
-    analogWrite(pin, pwmValue);
-}
-
 static void Fans_updateSpeed()
 {
     fans.speed = 0;
@@ -53,11 +43,6 @@ bool Fans_begin()
     fans.outPercent = 0;
     fans.speed = 0;
 
-    pinMode(PIN_FAN_IN, OUTPUT);
-    pinMode(PIN_FAN_OUT, OUTPUT);
-    Fans_applyPercent(PIN_FAN_IN, fans.inPercent);
-    Fans_applyPercent(PIN_FAN_OUT, fans.outPercent);
-
     return true;
 }
 
@@ -71,8 +56,6 @@ void Fans_setIn(uint8_t percent)
         percent = 100;
 
     fans.inPercent = percent;
-    Fans_applyPercent(PIN_FAN_IN, fans.inPercent);
-    Fans_updateSpeed();
 }
 
 //==============================================================================
@@ -85,8 +68,6 @@ void Fans_setOut(uint8_t percent)
         percent = 100;
 
     fans.outPercent = percent;
-    Fans_applyPercent(PIN_FAN_OUT, fans.outPercent);
-    Fans_updateSpeed();
 }
 
 //==============================================================================
@@ -110,8 +91,6 @@ void Fans_setSpeed(uint8_t speed)
     fans.outPercent = percent;
     fans.speed = speed;
 
-    Fans_applyPercent(PIN_FAN_IN, fans.inPercent);
-    Fans_applyPercent(PIN_FAN_OUT, fans.outPercent);
 }
 
 //==============================================================================
@@ -151,6 +130,4 @@ void Fans_stopAll()
     fans.outPercent = 0;
     fans.speed = 0;
 
-    Fans_applyPercent(PIN_FAN_IN, fans.inPercent);
-    Fans_applyPercent(PIN_FAN_OUT, fans.outPercent);
 }
