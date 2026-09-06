@@ -173,10 +173,10 @@ void Display_showHome(const SensorData& climate,
 
     if (Display_floatChanged(homeCache.intTemp, climate.intTemp))
 {
-    display.fillRect(15, 99, 106, 44, ILI9341_DARKGREY);
+    display.fillRect(15, 99, 106, 44, ILI9341_BLACK);
 
     display.setTextColor(ILI9341_WHITE);
-    display.setTextSize(4);
+    display.setTextSize(5);
     display.setCursor(20,108);
 
     display.print(climate.intTemp,1);
@@ -187,10 +187,10 @@ void Display_showHome(const SensorData& climate,
 
     if (Display_floatChanged(homeCache.intHum, climate.intHum))
     {
-        display.fillRect(57,170,55,28,ILI9341_DARKGREY);
+        display.fillRect(57,170,55,28,ILI9341_BLACK);
 
 display.setTextColor(ILI9341_WHITE);
-display.setTextSize(3);
+display.setTextSize(4);
 display.setCursor(73,174);
 
 display.print((int)climate.intHum);
@@ -200,10 +200,10 @@ display.print((int)climate.intHum);
 
     if (Display_floatChanged(homeCache.extTemp, climate.extTemp))
 {
-    display.fillRect(176, 99, 107, 44, ILI9341_DARKGREY);
+    display.fillRect(176, 99, 107, 44, ILI9341_BLACK);
 
     display.setTextColor(ILI9341_WHITE);
-    display.setTextSize(4);
+    display.setTextSize(5);
     display.setCursor(181, 108);
 
     display.print(climate.extTemp, 1);
@@ -213,10 +213,10 @@ display.print((int)climate.intHum);
 
     if (Display_floatChanged(homeCache.extHum, climate.extHum))
     {
-        display.fillRect(218,170,55,28,ILI9341_DARKGREY);
+        display.fillRect(218,170,55,28,ILI9341_BLACK);
 
 display.setTextColor(ILI9341_WHITE);
-display.setTextSize(3);
+display.setTextSize(4);
 display.setCursor(233,174);
 
 display.print((int)climate.extHum);
