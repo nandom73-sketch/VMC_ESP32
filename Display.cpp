@@ -30,16 +30,19 @@ static constexpr uint8_t HOME_INVALID_PERCENT = 255;
 
 static constexpr int16_t HOME_INT_TEMP_X = 20;
 static constexpr int16_t HOME_EXT_TEMP_X = 181;
-static constexpr int16_t HOME_TEMP_Y = 99;
-static constexpr int16_t HOME_TEMP_W = 106;
-static constexpr int16_t HOME_TEMP_H = 44;
+// These rectangles are wholly inside the black value panels of vmcBackground.
+// Keep them larger than the font bounds so a partial refresh also removes pixels
+// from a previous value.
+static constexpr int16_t HOME_TEMP_CLEAR_Y = 96;
+static constexpr int16_t HOME_TEMP_CLEAR_W = 106;
+static constexpr int16_t HOME_TEMP_CLEAR_H = 52;
 static constexpr int16_t HOME_TEMP_BASELINE = 132;
 
 static constexpr int16_t HOME_INT_HUM_X = 73;
 static constexpr int16_t HOME_EXT_HUM_X = 233;
-static constexpr int16_t HOME_HUM_Y = 170;
-static constexpr int16_t HOME_HUM_W = 55;
-static constexpr int16_t HOME_HUM_H = 28;
+static constexpr int16_t HOME_HUM_CLEAR_Y = 160;
+static constexpr int16_t HOME_HUM_CLEAR_W = 55;
+static constexpr int16_t HOME_HUM_CLEAR_H = 40;
 static constexpr int16_t HOME_HUM_BASELINE = 192;
 
 struct HomeDisplayCache
@@ -191,7 +194,11 @@ void Display_showHome(const SensorData& climate,
 
     if (Display_floatChanged(homeCache.intTemp, climate.intTemp))
     {
-        display.fillRect(15, HOME_TEMP_Y, HOME_TEMP_W, HOME_TEMP_H, ILI9341_BLACK);
+        display.fillRect(15,
+                         HOME_TEMP_CLEAR_Y,
+                         HOME_TEMP_CLEAR_W,
+                         HOME_TEMP_CLEAR_H,
+                         ILI9341_BLACK);
         display.setTextColor(ILI9341_WHITE);
         display.setFont(&FreeSansBold24pt7b);
         display.setCursor(HOME_INT_TEMP_X, HOME_TEMP_BASELINE);
@@ -202,7 +209,11 @@ void Display_showHome(const SensorData& climate,
 
     if (Display_floatChanged(homeCache.intHum, climate.intHum))
     {
-        display.fillRect(57, HOME_HUM_Y, HOME_HUM_W, HOME_HUM_H, ILI9341_BLACK);
+        display.fillRect(57,
+                         HOME_HUM_CLEAR_Y,
+                         HOME_HUM_CLEAR_W,
+                         HOME_HUM_CLEAR_H,
+                         ILI9341_BLACK);
         display.setTextColor(ILI9341_WHITE);
         display.setFont(&FreeSansBold18pt7b);
         display.setCursor(HOME_INT_HUM_X, HOME_HUM_BASELINE);
@@ -213,7 +224,11 @@ void Display_showHome(const SensorData& climate,
 
     if (Display_floatChanged(homeCache.extTemp, climate.extTemp))
     {
-        display.fillRect(176, HOME_TEMP_Y, HOME_TEMP_W + 1, HOME_TEMP_H, ILI9341_BLACK);
+        display.fillRect(176,
+                         HOME_TEMP_CLEAR_Y,
+                         HOME_TEMP_CLEAR_W + 1,
+                         HOME_TEMP_CLEAR_H,
+                         ILI9341_BLACK);
         display.setTextColor(ILI9341_WHITE);
         display.setFont(&FreeSansBold24pt7b);
         display.setCursor(HOME_EXT_TEMP_X, HOME_TEMP_BASELINE);
@@ -224,7 +239,11 @@ void Display_showHome(const SensorData& climate,
 
     if (Display_floatChanged(homeCache.extHum, climate.extHum))
     {
-        display.fillRect(218, HOME_HUM_Y, HOME_HUM_W, HOME_HUM_H, ILI9341_BLACK);
+        display.fillRect(218,
+                         HOME_HUM_CLEAR_Y,
+                         HOME_HUM_CLEAR_W,
+                         HOME_HUM_CLEAR_H,
+                         ILI9341_BLACK);
         display.setTextColor(ILI9341_WHITE);
         display.setFont(&FreeSansBold18pt7b);
         display.setCursor(HOME_EXT_HUM_X, HOME_HUM_BASELINE);
