@@ -12,6 +12,8 @@
 #include <SPI.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_ILI9341.h>
+#include <Fonts/FreeSansBold18pt7b.h>
+#include <Fonts/FreeSansBold24pt7b.h>
 #include <math.h>
 #include "VMC_UI_v1.h"
 
@@ -25,6 +27,20 @@ static constexpr int16_t HOME_LABEL_X = 10;
 static constexpr int16_t HOME_VALUE_X = 70;
 static constexpr int16_t HOME_LINE_H = 20;
 static constexpr uint8_t HOME_INVALID_PERCENT = 255;
+
+static constexpr int16_t HOME_INT_TEMP_X = 20;
+static constexpr int16_t HOME_EXT_TEMP_X = 181;
+static constexpr int16_t HOME_TEMP_Y = 99;
+static constexpr int16_t HOME_TEMP_W = 106;
+static constexpr int16_t HOME_TEMP_H = 44;
+static constexpr int16_t HOME_TEMP_BASELINE = 132;
+
+static constexpr int16_t HOME_INT_HUM_X = 73;
+static constexpr int16_t HOME_EXT_HUM_X = 233;
+static constexpr int16_t HOME_HUM_Y = 170;
+static constexpr int16_t HOME_HUM_W = 55;
+static constexpr int16_t HOME_HUM_H = 28;
+static constexpr int16_t HOME_HUM_BASELINE = 192;
 
 struct HomeDisplayCache
 {
@@ -103,6 +119,9 @@ bool Display_begin()
 {
     Display_invalidateHomeCache();
 
+    pinMode(16, OUTPUT);
+    analogWrite(16, 255);
+
     pinMode(PIN_TFT_RST, OUTPUT);
 
     digitalWrite(PIN_TFT_RST, HIGH);
@@ -168,61 +187,53 @@ void Display_showHome(const SensorData& climate,
         Display_drawHomeLayout();
     }
 
-    display.setTextColor(ILI9341_WHITE);
-    display.setTextSize(2);
+    display.setTextSize(1);
 
     if (Display_floatChanged(homeCache.intTemp, climate.intTemp))
-{
-    display.fillRect(15, 99, 106, 44, ILI9341_BLACK);
+    {
+        display.fillRect(15, HOME_TEMP_Y, HOME_TEMP_W, HOME_TEMP_H, ILI9341_BLACK);
+        display.setTextColor(ILI9341_WHITE);
+        display.setFont(&FreeSansBold24pt7b);
+        display.setCursor(HOME_INT_TEMP_X, HOME_TEMP_BASELINE);
+        display.print(climate.intTemp, 1);
 
-    display.setTextColor(ILI9341_WHITE);
-    display.setTextSize(5);
-    display.setCursor(20,108);
-
-    display.print(climate.intTemp,1);
-    //display.print("°");
-
-    homeCache.intTemp = climate.intTemp;
-}
+        homeCache.intTemp = climate.intTemp;
+    }
 
     if (Display_floatChanged(homeCache.intHum, climate.intHum))
     {
-        display.fillRect(57,170,55,28,ILI9341_BLACK);
+        display.fillRect(57, HOME_HUM_Y, HOME_HUM_W, HOME_HUM_H, ILI9341_BLACK);
+        display.setTextColor(ILI9341_WHITE);
+        display.setFont(&FreeSansBold18pt7b);
+        display.setCursor(HOME_INT_HUM_X, HOME_HUM_BASELINE);
+        display.print((int)climate.intHum);
 
-display.setTextColor(ILI9341_WHITE);
-display.setTextSize(4);
-display.setCursor(73,174);
-
-display.print((int)climate.intHum);
-//display.print("%");
         homeCache.intHum = climate.intHum;
     }
 
     if (Display_floatChanged(homeCache.extTemp, climate.extTemp))
-{
-    display.fillRect(176, 99, 107, 44, ILI9341_BLACK);
+    {
+        display.fillRect(176, HOME_TEMP_Y, HOME_TEMP_W + 1, HOME_TEMP_H, ILI9341_BLACK);
+        display.setTextColor(ILI9341_WHITE);
+        display.setFont(&FreeSansBold24pt7b);
+        display.setCursor(HOME_EXT_TEMP_X, HOME_TEMP_BASELINE);
+        display.print(climate.extTemp, 1);
 
-    display.setTextColor(ILI9341_WHITE);
-    display.setTextSize(5);
-    display.setCursor(181, 108);
-
-    display.print(climate.extTemp, 1);
-
-    homeCache.extTemp = climate.extTemp;
-}
+        homeCache.extTemp = climate.extTemp;
+    }
 
     if (Display_floatChanged(homeCache.extHum, climate.extHum))
     {
-        display.fillRect(218,170,55,28,ILI9341_BLACK);
+        display.fillRect(218, HOME_HUM_Y, HOME_HUM_W, HOME_HUM_H, ILI9341_BLACK);
+        display.setTextColor(ILI9341_WHITE);
+        display.setFont(&FreeSansBold18pt7b);
+        display.setCursor(HOME_EXT_HUM_X, HOME_HUM_BASELINE);
+        display.print((int)climate.extHum);
 
-display.setTextColor(ILI9341_WHITE);
-display.setTextSize(4);
-display.setCursor(233,174);
-
-display.print((int)climate.extHum);
-//display.print("%");
         homeCache.extHum = climate.extHum;
     }
+
+    display.setFont();
 /*
    if (Display_floatChanged(homeCache.pressure, climate.pressure))
     {
