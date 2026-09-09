@@ -11,7 +11,6 @@
 
 #include <SPI.h>
 #include <TFT_eSPI.h>
-#include <Fonts/FreeSansBold18pt7b.h>
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
@@ -142,16 +141,21 @@ static void Display_drawHumidity(float humidity,
                                  int16_t clearX,
                                  int16_t textX)
 {
+    char humidityText[4];
+    snprintf(humidityText,
+             sizeof(humidityText),
+             "%d",
+             static_cast<int>(humidity));
+
     display.fillRect(clearX,
                      HOME_HUM_CLEAR_Y,
                      HOME_HUM_CLEAR_W,
                      HOME_HUM_CLEAR_H,
                      TFT_BLACK);
     display.setTextColor(TFT_WHITE, TFT_BLACK);
-    display.setFreeFont(&FreeSansBold18pt7b);
-    display.setCursor(textX, HOME_HUM_BASELINE);
-    display.print(static_cast<int>(humidity));
-    display.setFreeFont(nullptr);
+    display.setTextDatum(BL_DATUM);
+    display.setTextFont(4);
+    display.drawString(humidityText, textX, HOME_HUM_BASELINE);
 }
 
 //=============================================================================
