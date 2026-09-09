@@ -42,14 +42,16 @@ static constexpr int16_t HOME_INT_TEMP_CENTER_X =
 static constexpr int16_t HOME_EXT_TEMP_CENTER_X =
     HOME_EXT_TEMP_CLEAR_X + (HOME_TEMP_CLEAR_W / 2);
 
-static constexpr int16_t HOME_INT_HUM_X = 73;
-static constexpr int16_t HOME_EXT_HUM_X = 233;
 static constexpr int16_t HOME_HUM_CLEAR_Y = 160;
 static constexpr int16_t HOME_HUM_CLEAR_W = 55;
 static constexpr int16_t HOME_HUM_CLEAR_H = 40;
-static constexpr int16_t HOME_HUM_BASELINE = 192;
+static constexpr int16_t HOME_HUM_TEXT_Y = HOME_HUM_CLEAR_Y;
 static constexpr int16_t HOME_INT_HUM_CLEAR_X = 57;
 static constexpr int16_t HOME_EXT_HUM_CLEAR_X = 218;
+static constexpr int16_t HOME_INT_HUM_CENTER_X =
+    HOME_INT_HUM_CLEAR_X + (HOME_HUM_CLEAR_W / 2);
+static constexpr int16_t HOME_EXT_HUM_CENTER_X =
+    HOME_EXT_HUM_CLEAR_X + (HOME_HUM_CLEAR_W / 2);
 
 struct HomeDisplayCache
 {
@@ -84,6 +86,9 @@ static bool Display_floatChanged(float cached, float value)
 
 static void Display_drawHomeLayout()
 {
+    // vmcBackground stores RGB565 pixels in big-endian byte order.  TFT_eSPI
+    // needs swapping enabled when it transfers this uint16_t image buffer.
+    display.setSwapBytes(true);
     display.pushImage(0,
                       0,
                       VMC_BG_WIDTH,
@@ -139,7 +144,7 @@ static void Display_drawTemperature(float temperature,
 
 static void Display_drawHumidity(float humidity,
                                  int16_t clearX,
-                                 int16_t textX)
+                                 int16_t centerX)
 {
     char humidityText[4];
     snprintf(humidityText,
@@ -153,9 +158,11 @@ static void Display_drawHumidity(float humidity,
                      HOME_HUM_CLEAR_H,
                      TFT_BLACK);
     display.setTextColor(TFT_WHITE, TFT_BLACK);
-    display.setTextDatum(BL_DATUM);
-    display.setTextFont(4);
-    display.drawString(humidityText, textX, HOME_HUM_BASELINE);
+    display.setTextDatum(TL_DATUM);
+    display.loadFont(Roboto40);
+    const int16_t textX = centerX - (display.textWidth(humidityText) / 2);
+    display.drawString(humidityText, textX, HOME_HUM_TEXT_Y);
+    display.unloadFont();
 }
 
 //=============================================================================
@@ -241,7 +248,7 @@ void Display_showHome(const SensorData& climate,
     {
         Display_drawHumidity(climate.intHum,
                              HOME_INT_HUM_CLEAR_X,
-                             HOME_INT_HUM_X);
+                             HOME_INT_HUM_CENTER_X);
         homeCache.intHum = climate.intHum;
     }
 
@@ -257,7 +264,7 @@ void Display_showHome(const SensorData& climate,
     {
         Display_drawHumidity(climate.extHum,
                              HOME_EXT_HUM_CLEAR_X,
-                             HOME_EXT_HUM_X);
+                             HOME_EXT_HUM_CENTER_X);
         homeCache.extHum = climate.extHum;
     }
 }
