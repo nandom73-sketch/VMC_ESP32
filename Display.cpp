@@ -2,7 +2,7 @@
  * Display Module
  *
  * STATUS  : DEVELOPMENT
- * VERSION : 0.1.8 - Dynamic Home values redraw without Smooth Font artefacts
+ * VERSION : 0.1.9 - Full Home redraw diagnostic for Smooth Font artefacts
  *
  ******************************************************************************/
 
@@ -31,31 +31,15 @@ static constexpr uint8_t DISPLAY_ROTATION = 3;
 static constexpr uint8_t HOME_INVALID_PERCENT = 255;
 static constexpr int16_t HOME_HUMIDITY_SPACING = 4;
 
-// Temperature value panels in vmcBackground.
-static constexpr int16_t HOME_INT_TEMP_CLEAR_X = 15;
-static constexpr int16_t HOME_EXT_TEMP_CLEAR_X = 176;
-static constexpr int16_t HOME_TEMP_CLEAR_Y = 96;
-static constexpr int16_t HOME_TEMP_CLEAR_W = 106;
-static constexpr int16_t HOME_TEMP_CLEAR_H = 52;
+// Temperature centers are shifted 10 px right in the approved layout.
+static constexpr int16_t HOME_INT_TEMP_CENTER_X = 78;
+static constexpr int16_t HOME_EXT_TEMP_CENTER_X = 239;
 static constexpr int16_t HOME_TEMP_TEXT_Y = 98;
 
-// Temperature centers are shifted 10 px right in the approved layout.
-static constexpr int16_t HOME_INT_TEMP_CENTER_X =
-    HOME_INT_TEMP_CLEAR_X + (HOME_TEMP_CLEAR_W / 2) + 10;
-static constexpr int16_t HOME_EXT_TEMP_CENTER_X =
-    HOME_EXT_TEMP_CLEAR_X + (HOME_TEMP_CLEAR_W / 2) + 10;
-
-// Humidity value panels in vmcBackground.
-static constexpr int16_t HOME_HUM_CLEAR_Y = 160;
-static constexpr int16_t HOME_HUM_CLEAR_W = 55;
-static constexpr int16_t HOME_HUM_CLEAR_H = 40;
-static constexpr int16_t HOME_HUM_TEXT_Y = HOME_HUM_CLEAR_Y;
-static constexpr int16_t HOME_INT_HUM_CLEAR_X = 57;
-static constexpr int16_t HOME_EXT_HUM_CLEAR_X = 218;
-static constexpr int16_t HOME_INT_HUM_CENTER_X =
-    HOME_INT_HUM_CLEAR_X + (HOME_HUM_CLEAR_W / 2);
-static constexpr int16_t HOME_EXT_HUM_CENTER_X =
-    HOME_EXT_HUM_CLEAR_X + (HOME_HUM_CLEAR_W / 2);
+// Humidity value positions in vmcBackground.
+static constexpr int16_t HOME_INT_HUM_CENTER_X = 84;
+static constexpr int16_t HOME_EXT_HUM_CENTER_X = 245;
+static constexpr int16_t HOME_HUM_TEXT_Y = 160;
 
 //=============================================================================
 
@@ -133,9 +117,7 @@ static void Display_prepareTemperature(float temperature,
 
 //=============================================================================
 
-static void Display_drawTemperature(float temperature,
-                                    int16_t clearX,
-                                    int16_t centerX)
+static void Display_drawTemperature(float temperature, int16_t centerX)
 {
     char integerText[12];
     char decimalText[3];
@@ -158,15 +140,6 @@ static void Display_drawTemperature(float temperature,
     const int16_t textX =
         centerX - ((integerWidth + decimalWidth + unitWidth) / 2);
 
-    // A complete black clear precedes every redraw. This removes antialiased
-    // pixels left by previous Smooth Font renders before the entire value is
-    // drawn again.
-    display.fillRect(clearX,
-                     HOME_TEMP_CLEAR_Y,
-                     HOME_TEMP_CLEAR_W,
-                     HOME_TEMP_CLEAR_H,
-                     TFT_BLACK);
-
     display.loadFont(Roboto65);
     display.drawString(integerText, textX, HOME_TEMP_TEXT_Y);
     display.unloadFont();
@@ -183,9 +156,7 @@ static void Display_drawTemperature(float temperature,
 
 //=============================================================================
 
-static void Display_drawHumidity(float humidity,
-                                 int16_t clearX,
-                                 int16_t centerX)
+static void Display_drawHumidity(float humidity, int16_t centerX)
 {
     char humidityText[4];
     snprintf(humidityText,
@@ -204,15 +175,6 @@ static void Display_drawHumidity(float humidity,
     // Center the complete "XX %" group, including the approved spacing.
     const int16_t textX = centerX -
         ((valueWidth + HOME_HUMIDITY_SPACING + unitWidth) / 2);
-
-    // A complete black clear precedes every redraw. This removes antialiased
-    // pixels left by previous Smooth Font renders before the entire value is
-    // drawn again.
-    display.fillRect(clearX,
-                     HOME_HUM_CLEAR_Y,
-                     HOME_HUM_CLEAR_W,
-                     HOME_HUM_CLEAR_H,
-                     TFT_BLACK);
 
     display.loadFont(Roboto50);
     display.drawString(humidityText, textX, HOME_HUM_TEXT_Y);
@@ -234,41 +196,26 @@ void Display_showHome(const SensorData& climate,
 {
     (void)fans;
 
-    if (!homeCache.layoutDrawn)
+    const bool dynamicValueChanged =
+        Display_floatChanged(homeCache.intTemp, climate.intTemp) ||
+        Display_floatChanged(homeCache.extTemp, climate.extTemp) ||
+        Display_floatChanged(homeCache.intHum, climate.intHum) ||
+        Display_floatChanged(homeCache.extHum, climate.extHum);
+
+    if (!homeCache.layoutDrawn || dynamicValueChanged)
     {
+        // Diagnostic path: replace the complete Home background before drawing
+        // every dynamic value, avoiding all partial-area TFT refreshes.
         Display_drawHomeLayout();
-    }
 
-    // Each value retains its own cache and only changed fields are refreshed.
-    if (Display_floatChanged(homeCache.intTemp, climate.intTemp))
-    {
-        Display_drawTemperature(climate.intTemp,
-                                HOME_INT_TEMP_CLEAR_X,
-                                HOME_INT_TEMP_CENTER_X);
+        Display_drawTemperature(climate.intTemp, HOME_INT_TEMP_CENTER_X);
+        Display_drawTemperature(climate.extTemp, HOME_EXT_TEMP_CENTER_X);
+        Display_drawHumidity(climate.intHum, HOME_INT_HUM_CENTER_X);
+        Display_drawHumidity(climate.extHum, HOME_EXT_HUM_CENTER_X);
+
         homeCache.intTemp = climate.intTemp;
-    }
-
-    if (Display_floatChanged(homeCache.extTemp, climate.extTemp))
-    {
-        Display_drawTemperature(climate.extTemp,
-                                HOME_EXT_TEMP_CLEAR_X,
-                                HOME_EXT_TEMP_CENTER_X);
         homeCache.extTemp = climate.extTemp;
-    }
-
-    if (Display_floatChanged(homeCache.intHum, climate.intHum))
-    {
-        Display_drawHumidity(climate.intHum,
-                             HOME_INT_HUM_CLEAR_X,
-                             HOME_INT_HUM_CENTER_X);
         homeCache.intHum = climate.intHum;
-    }
-
-    if (Display_floatChanged(homeCache.extHum, climate.extHum))
-    {
-        Display_drawHumidity(climate.extHum,
-                             HOME_EXT_HUM_CLEAR_X,
-                             HOME_EXT_HUM_CENTER_X);
         homeCache.extHum = climate.extHum;
     }
 }
