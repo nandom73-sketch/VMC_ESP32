@@ -32,14 +32,14 @@ static constexpr uint8_t HOME_INVALID_PERCENT = 255;
 static constexpr int16_t HOME_HUMIDITY_SPACING = 4;
 
 // Temperature centers are shifted 10 px right in the approved layout.
-static constexpr int16_t HOME_INT_TEMP_CENTER_X = 78;
-static constexpr int16_t HOME_EXT_TEMP_CENTER_X = 239;
+static constexpr int16_t HOME_INT_TEMP_CENTER_X = 80;
+static constexpr int16_t HOME_EXT_TEMP_CENTER_X = 237;
 static constexpr int16_t HOME_TEMP_TEXT_Y = 98;
 
 // Humidity value positions in vmcBackground.
-static constexpr int16_t HOME_INT_HUM_CENTER_X = 84;
-static constexpr int16_t HOME_EXT_HUM_CENTER_X = 245;
-static constexpr int16_t HOME_HUM_TEXT_Y = 160;
+static constexpr int16_t HOME_INT_HUM_CENTER_X = 100;
+static constexpr int16_t HOME_EXT_HUM_CENTER_X = 255;
+static constexpr int16_t HOME_HUM_TEXT_Y = 163;
 
 //=============================================================================
 
